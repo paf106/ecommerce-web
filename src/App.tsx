@@ -1,33 +1,45 @@
-import {useEffect, useState} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import {ProductList} from "./components/ProductList.tsx";
+import { dependencies } from './presentation/composition/dependencies'
+import { AppLayout } from './presentation/components/AppLayout'
+import { CartPage } from './presentation/pages/CartPage'
+import { CheckoutPage } from './presentation/pages/CheckoutPage'
+import { LoginPage } from './presentation/pages/LoginPage'
+import { ProductsPage } from './presentation/pages/ProductsPage'
+import { RegisterPage } from './presentation/pages/RegisterPage'
+import { AuthProvider } from './presentation/providers/AuthProvider'
+import { CartProvider } from './presentation/providers/CartProvider'
+import { RouterProvider } from './presentation/router/RouterProvider'
+import { useRouter } from './presentation/router/routerContext'
 
 function App() {
-    const [count, setCount] = useState(0)
-    const [dato, setDato] = useState([])
-    const url = import.meta.env.VITE_API_URL
-    useEffect(() => {
-        const response = fetch(url + "/products")
-        .then(res => res.json())
-        .then(data => setDato(data))
+  return (
+    <RouterProvider>
+      <AuthProvider authRepository={dependencies.authRepository}>
+        <CartProvider>
+          <AppLayout>
+            <AppRoutes />
+          </AppLayout>
+        </CartProvider>
+      </AuthProvider>
+    </RouterProvider>
+  )
+}
 
-    }, [])
+function AppRoutes() {
+  const { currentPath } = useRouter()
 
-    return (
-        <>
-            <ProductList  products={dato}/>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-
-            </div>
-
-        </>
-    )
+  switch (currentPath) {
+    case '/login':
+      return <LoginPage />
+    case '/register':
+      return <RegisterPage />
+    case '/cart':
+      return <CartPage />
+    case '/checkout':
+      return <CheckoutPage orderRepository={dependencies.orderRepository} />
+    case '/':
+    case '/products':
+      return <ProductsPage productRepository={dependencies.productRepository} />
+  }
 }
 
 export default App
