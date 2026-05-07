@@ -1,6 +1,6 @@
 import type { UserSession } from '../../domain/entities/UserSession'
 
-const DEFAULT_API_BASE_URL = 'http://localhost:8080/api/v1'
+const DEFAULT_API_BASE_URL = 'https://api.pabloavila.dev/api/v1'
 
 interface ApiRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
